@@ -97,6 +97,120 @@ import './popup.css';
 
   document.addEventListener('DOMContentLoaded', restoreCounter);
 
+  // ---- 
+
+  // const streetAddressStorage = {
+  //   get: cb => {
+  //     chrome.storage.sync.get(['streetAddress'], result => {
+  //       cb(result.streetAddress);
+  //     });
+  //   },
+  //   set: (value, cb) => {
+  //     chrome.storage.sync.set(
+  //       {
+  //         streetAddress: value,
+  //       },
+  //       () => {
+  //         cb();
+  //       }
+  //     );
+  //   },
+  // };
+
+  // const phoneNumberStorage = {
+  //   get: cb => {
+  //     chrome.storage.sync.get(['phoneNumber'], result => {
+  //       cb(result.phoneNumber);
+  //     });
+  //   },
+  //   set: (value, cb) => {
+  //     chrome.storage.sync.set(
+  //       {
+  //         phoneNumber: value,
+  //       },
+  //       () => {
+  //         cb();
+  //       }
+  //     );
+  //   },
+  // };
+
+  // const emailAddressStorage = {
+  //   get: cb => {
+  //     chrome.storage.sync.get(['emailAddress'], result => {
+  //       cb(result.emailAddress);
+  //     });
+  //   },
+  //   set: (value, cb) => {
+  //     chrome.storage.sync.set(
+  //       {
+  //         emailAddress: value,
+  //       },
+  //       () => {
+  //         cb();
+  //       }
+  //     );
+  //   },
+  // };
+
+
+  function checkSellerInfo() {
+    document.getElementById('streetAddressVal').innerHTML = "replaced_OK!";
+
+    document.getElementById('streetAddressBtn').addEventListener('click', () => {
+      console.log("Button streetAddressBtn clicked!");
+    });
+
+    // とりあえず、ダミーデータを挿入する
+    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+      const tab = tabs[0];
+
+      console.log("Creating dummy data...")
+      console.log(tab.id)
+
+      chrome.tabs.sendMessage(
+        tab.id,
+        {
+          type: 'SET-SELLER-INFO',
+          payload: {
+            streetAddress: `dummy streetAddress for ${tab.id}`,
+            phoneNumber: `dummy phoneNumber for ${tab.id}`,
+            emailAddress: `dummy emailtAddress for ${tab.id}`
+          }
+        },
+        response => {
+          console.log("Result for SET-SELLER-INFO are returned!")
+          console.log(response);
+
+          // ダミーデータ挿入がおわったら、データをフェッチする
+          chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+            const tab = tabs[0];
+      
+            chrome.tabs.sendMessage(
+              tab.id,
+              {
+                type: 'GET-SELLER-INFO',
+              },
+              response => {
+                console.log("Result for GET-SELLER-INFO are returned!!")
+                console.log(response);
+
+                document.getElementById('streetAddressVal').innerHTML = response.sellerInfo.streetAddress;
+                document.getElementById('phoneNumberVal').innerHTML = response.sellerInfo.phoneNumber;
+                document.getElementById('emailAddressVal').innerHTML = response.sellerInfo.emailAddress;
+              }
+            );
+          });
+
+        }
+      );
+    });
+  }
+  document.addEventListener('DOMContentLoaded', checkSellerInfo);
+
+
+  // ----
+
   // Communicate with background file by sending a message
   chrome.runtime.sendMessage(
     {

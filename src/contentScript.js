@@ -32,12 +32,54 @@ chrome.runtime.sendMessage(
 
 // Listen for message
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.log(`recv MSG!!`);
+
+  if (request.text == "code-block") {
+    console.log(`hoge!!`);
+    const selection = window.getSelection().toString().replace(/\n/g, "<br/>");
+    const insertContent = `<samp>${selection}</samp>`;
+    document.execCommand("insertHTML", false, insertContent);
+    sendResponse({ "text": insertContent });
+    return true;
+  }
+
   if (request.type === 'COUNT') {
+    console.log("type   COUNT received.")
     console.log(`Current count is ${request.payload.count}`);
   }
+
+  if (request.type === 'SET-SELLER-INFO') {
+    console.log("type SET-SELLER-INFO received.")
+    console.log(request.payload)
+    console.log(JSON.stringify(request.payload) )
+    // JSON形式のオブジェクトを格納するときは文字列に直さなくちゃいけないらしい
+    sessionStorage["sellerInfo"] = JSON.stringify(request.payload);
+    // sessionStorage["streetAddress"] = request.payload.streetAddress;
+  }
+
+  if (request.type === 'GET-SELLER-INFO') {
+    console.log("type GET-SELLER-INFO received.")
+    const temp = sessionStorage.hasOwnProperty('sellerInfo')
+    console.log(`Does have sellerInfo property?: ${temp}`)
+
+    if(sessionStorage.hasOwnProperty('sellerInfo')) {
+      const sellerInfo = JSON.parse(sessionStorage["sellerInfo"])
+      console.log(sellerInfo)
+      console.log(sellerInfo.streetAddress)
+      // console.log(sessionStorage["streetAddress"])
+      sendResponse({ "sellerInfo": sellerInfo });
+      return true;
+    }
+
+
+  }
+
 
   // Send an empty response
   // See https://github.com/mozilla/webextension-polyfill/issues/130#issuecomment-531531890
   sendResponse({});
   return true;
+
+
+  
 });

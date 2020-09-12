@@ -32,5 +32,28 @@
         "contentScript.js"
       ]
     }
-  ]
+  ],
+  "commands": {
+    "code-block": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+K",
+        "mac": "Command+Shift+K"
+      },
+      "description": "hogehoge"
+    },
+    "select-phone-number": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+O",
+        "mac": "Command+Shift+O"
+      },
+      "description": "Selecting text as a phone number."
+    },
+    "select-email-address": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+P",
+        "mac": "Command+Shift+P"
+      },
+      "description": "Selecting text as a email address."
+    }
+  }
 }
