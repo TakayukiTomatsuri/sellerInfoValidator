@@ -23,12 +23,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 chrome.commands.onCommand.addListener(function (command) {
   console.log("Hit command!")
 
-  if (command === 'code-block') {
-    console.log("Hit command code-block1!")
+  if (command === 'select-street-address') {
+    console.log("Hit command select-street-address1!!")
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      console.log("Hit command code-block2!")
-      chrome.tabs.sendMessage(tabs[0].id, { text: "code-block" }, function (response) {
-        console.log("Hit command code-block3!")
+      console.log("Hit command select-street-address2!")
+      chrome.tabs.sendMessage(tabs[0].id, { text: "select-street-address" }, function (response) {
+        console.log("Hit command select-street-address3!")
         console.log(response);
       });
     });

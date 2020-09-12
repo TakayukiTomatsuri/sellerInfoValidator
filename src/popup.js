@@ -161,50 +161,52 @@ import './popup.css';
       console.log("Button streetAddressBtn clicked!");
     });
 
-    // とりあえず、ダミーデータを挿入する
+
+
+    // データをフェッチする（ダミーデータがない場合、contentScript.jsの側で自動で作る）
     chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
       const tab = tabs[0];
-
-      console.log("Creating dummy data...")
-      console.log(tab.id)
 
       chrome.tabs.sendMessage(
         tab.id,
         {
-          type: 'SET-SELLER-INFO',
-          payload: {
-            streetAddress: `dummy streetAddress for ${tab.id}`,
-            phoneNumber: `dummy phoneNumber for ${tab.id}`,
-            emailAddress: `dummy emailtAddress for ${tab.id}`
-          }
+          type: 'GET-SELLER-INFO',
         },
         response => {
-          console.log("Result for SET-SELLER-INFO are returned!")
+          console.log("Result for GET-SELLER-INFO are returned!!")
           console.log(response);
 
-          // ダミーデータ挿入がおわったら、データをフェッチする
-          chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-            const tab = tabs[0];
-      
-            chrome.tabs.sendMessage(
-              tab.id,
-              {
-                type: 'GET-SELLER-INFO',
-              },
-              response => {
-                console.log("Result for GET-SELLER-INFO are returned!!")
-                console.log(response);
-
-                document.getElementById('streetAddressVal').innerHTML = response.sellerInfo.streetAddress;
-                document.getElementById('phoneNumberVal').innerHTML = response.sellerInfo.phoneNumber;
-                document.getElementById('emailAddressVal').innerHTML = response.sellerInfo.emailAddress;
-              }
-            );
-          });
-
+          document.getElementById('streetAddressVal').innerHTML = response.sellerInfo.streetAddress;
+          document.getElementById('phoneNumberVal').innerHTML = response.sellerInfo.phoneNumber;
+          document.getElementById('emailAddressVal').innerHTML = response.sellerInfo.emailAddress;
         }
       );
     });
+    // // とりあえず、ダミーデータを挿入する
+    // chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+    //   const tab = tabs[0];
+
+    //   console.log("Creating dummy data...")
+    //   console.log(tab.id)
+
+    //   chrome.tabs.sendMessage(
+    //     tab.id,
+    //     {
+    //       type: 'SET-SELLER-INFO',
+    //       payload: {
+    //         streetAddress: `dummy streetAddress for ${tab.id}`,
+    //         phoneNumber: `dummy phoneNumber for ${tab.id}`,
+    //         emailAddress: `dummy emailtAddress for ${tab.id}`
+    //       }
+    //     },
+    //     response => {
+    //       console.log("Result for SET-SELLER-INFO are returned!")
+    //       console.log(response);
+
+
+    //     }
+    //   );
+    // });
   }
   document.addEventListener('DOMContentLoaded', checkSellerInfo);
 

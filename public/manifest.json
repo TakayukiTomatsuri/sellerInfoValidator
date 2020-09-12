@@ -34,12 +34,12 @@
     }
   ],
   "commands": {
-    "code-block": {
+    "select-street-address": {
       "suggested_key": {
         "default": "Ctrl+Shift+K",
         "mac": "Command+Shift+K"
       },
-      "description": "hogehoge"
+      "description": "Selecting text as a street address."
     },
     "select-phone-number": {
       "suggested_key": {

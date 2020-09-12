@@ -17,6 +17,8 @@ console.log(
   `Page title is: '${pageTitle}' - evaluated by Chrome extension's 'contentScript.js' file`
 );
 
+
+
 // Communicate with background file by sending a message
 chrome.runtime.sendMessage(
   {
@@ -34,14 +36,62 @@ chrome.runtime.sendMessage(
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log(`recv MSG!!`);
 
-  if (request.text == "code-block") {
-    console.log(`hoge!!`);
-    const selection = window.getSelection().toString().replace(/\n/g, "<br/>");
-    const insertContent = `<samp>${selection}</samp>`;
-    document.execCommand("insertHTML", false, insertContent);
-    sendResponse({ "text": insertContent });
+  if (request.text == "select-street-address") {
+    console.log(`hit command select-street-address!!`);
+    const selection = window.getSelection().toString()
+    console.log(`selected: ${selection}`)
+    // const insertContent = `<samp>${selection}</samp>`;
+    // document.execCommand("insertHTML", false, insertContent);
+    const temp = sessionStorage.hasOwnProperty('sellerInfo')
+    console.log(`Does have sellerInfo property?: ${temp}`)
+
+    if(sessionStorage.hasOwnProperty('sellerInfo')) {
+      console.log(sessionStorage["sellerInfo"])
+      let sellerInfo = JSON.parse(sessionStorage["sellerInfo"])
+      sellerInfo.streetAddress = selection
+      console.log(sellerInfo)
+      sessionStorage["sellerInfo"] = JSON.stringify(sellerInfo);
+      console.log(sessionStorage["sellerInfo"])
+    }
+
+    sendResponse({ "text": selection });
     return true;
   }
+
+  if (request.text == "select-phone-number") {
+    console.log(`hit command select-phone-number!!`);
+    const selection = window.getSelection().toString()
+    const temp = sessionStorage.hasOwnProperty('sellerInfo')
+    console.log(`Does have sellerInfo property?: ${temp}`)
+
+    if(sessionStorage.hasOwnProperty('sellerInfo')) {
+      let sellerInfo = JSON.parse(sessionStorage["sellerInfo"])
+      sellerInfo.phoneNumber = selection
+      sessionStorage["sellerInfo"] = JSON.stringify(sellerInfo);
+    }
+
+    sendResponse({ "text": selection });
+    return true;
+  }
+
+
+  if (request.text == "select-email-address") {
+    console.log(`hit command select-email-address!!`);
+    const selection = window.getSelection().toString()
+    const temp = sessionStorage.hasOwnProperty('sellerInfo')
+    console.log(`Does have sellerInfo property?: ${temp}`)
+    
+    if(sessionStorage.hasOwnProperty('sellerInfo')) {
+      let sellerInfo = JSON.parse(sessionStorage["sellerInfo"])
+      sellerInfo.emailAddress = selection
+      sessionStorage["sellerInfo"] = JSON.stringify(sellerInfo);
+    }
+
+    sendResponse({ "text": selection });
+    return true;
+  }
+
+  
 
   if (request.type === 'COUNT') {
     console.log("type   COUNT received.")
@@ -62,24 +112,27 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const temp = sessionStorage.hasOwnProperty('sellerInfo')
     console.log(`Does have sellerInfo property?: ${temp}`)
 
+    let sellerInfo = {}
     if(sessionStorage.hasOwnProperty('sellerInfo')) {
-      const sellerInfo = JSON.parse(sessionStorage["sellerInfo"])
-      console.log(sellerInfo)
-      console.log(sellerInfo.streetAddress)
-      // console.log(sessionStorage["streetAddress"])
-      sendResponse({ "sellerInfo": sellerInfo });
-      return true;
+      sellerInfo = JSON.parse(sessionStorage["sellerInfo"])
+    }else{
+      const dummyData = {
+        streetAddress: `dummy streetAddress`,
+        phoneNumber: `dummy phoneNumber`,
+        emailAddress: `dummy emailtAddress`
+      }
+
+      sessionStorage["sellerInfo"] =  JSON.stringify(dummyData)
+      sellerInfo = dummyData
     }
 
-
+    console.log(sellerInfo)
+    sendResponse({ "sellerInfo": sellerInfo });
+    return true;
   }
-
 
   // Send an empty response
   // See https://github.com/mozilla/webextension-polyfill/issues/130#issuecomment-531531890
   sendResponse({});
   return true;
-
-
-  
 });
