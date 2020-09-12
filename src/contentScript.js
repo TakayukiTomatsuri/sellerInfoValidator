@@ -32,6 +32,33 @@ chrome.runtime.sendMessage(
   }
 );
 
+
+  const sellerInfoStorage = {
+    get:() => {
+      const temp = sessionStorage.hasOwnProperty('sellerInfo');
+      console.log(`Does have sellerInfo property?: ${temp}`);
+  
+      let sellerInfo = {};
+      if(sessionStorage.hasOwnProperty('sellerInfo')) {
+        sellerInfo = JSON.parse(sessionStorage["sellerInfo"]);
+      }else{
+        const dummyData = {
+          streetAddress: `dummy streetAddress`,
+          phoneNumber: `dummy phoneNumber`,
+          emailAddress: `dummy emailtAddress`
+        };
+  
+        sessionStorage["sellerInfo"] =  JSON.stringify(dummyData);
+        sellerInfo = dummyData;
+      }
+
+      return sellerInfo;
+    },
+    set: (sellerInfo) => {
+      sessionStorage["sellerInfo"] = JSON.stringify(sellerInfo);
+    },
+  };
+
 // Listen for message
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log(`recv MSG!!`);
@@ -42,17 +69,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     console.log(`selected: ${selection}`)
     // const insertContent = `<samp>${selection}</samp>`;
     // document.execCommand("insertHTML", false, insertContent);
-    const temp = sessionStorage.hasOwnProperty('sellerInfo')
-    console.log(`Does have sellerInfo property?: ${temp}`)
 
-    if(sessionStorage.hasOwnProperty('sellerInfo')) {
-      console.log(sessionStorage["sellerInfo"])
-      let sellerInfo = JSON.parse(sessionStorage["sellerInfo"])
-      sellerInfo.streetAddress = selection
-      console.log(sellerInfo)
-      sessionStorage["sellerInfo"] = JSON.stringify(sellerInfo);
-      console.log(sessionStorage["sellerInfo"])
-    }
+    let sellerInfo = sellerInfoStorage.get();
+    sellerInfo.streetAddress = selection
+    console.log(sellerInfo)
+    sellerInfoStorage.set(sellerInfo)
 
     sendResponse({ "text": selection });
     return true;
@@ -61,14 +82,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.text == "select-phone-number") {
     console.log(`hit command select-phone-number!!`);
     const selection = window.getSelection().toString()
-    const temp = sessionStorage.hasOwnProperty('sellerInfo')
-    console.log(`Does have sellerInfo property?: ${temp}`)
 
-    if(sessionStorage.hasOwnProperty('sellerInfo')) {
-      let sellerInfo = JSON.parse(sessionStorage["sellerInfo"])
-      sellerInfo.phoneNumber = selection
-      sessionStorage["sellerInfo"] = JSON.stringify(sellerInfo);
-    }
+    let sellerInfo = sellerInfoStorage.get();
+    sellerInfo.phoneNumber = selection
+    sellerInfoStorage.set(sellerInfo)
 
     sendResponse({ "text": selection });
     return true;
@@ -78,14 +95,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.text == "select-email-address") {
     console.log(`hit command select-email-address!!`);
     const selection = window.getSelection().toString()
-    const temp = sessionStorage.hasOwnProperty('sellerInfo')
-    console.log(`Does have sellerInfo property?: ${temp}`)
-    
-    if(sessionStorage.hasOwnProperty('sellerInfo')) {
-      let sellerInfo = JSON.parse(sessionStorage["sellerInfo"])
-      sellerInfo.emailAddress = selection
-      sessionStorage["sellerInfo"] = JSON.stringify(sellerInfo);
-    }
+
+    let sellerInfo = sellerInfoStorage.get();
+    sellerInfo.emailAddress = selection;
+    sellerInfoStorage.set(sellerInfo)
 
     sendResponse({ "text": selection });
     return true;
@@ -103,28 +116,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     console.log(request.payload)
     console.log(JSON.stringify(request.payload) )
     // JSON形式のオブジェクトを格納するときは文字列に直さなくちゃいけないらしい
-    sessionStorage["sellerInfo"] = JSON.stringify(request.payload);
-    // sessionStorage["streetAddress"] = request.payload.streetAddress;
+    // sessionStorage["sellerInfo"] = JSON.stringify(request.payload);
+    sellerInfoStorage.set(request.payload)
   }
 
   if (request.type === 'GET-SELLER-INFO') {
     console.log("type GET-SELLER-INFO received.")
-    const temp = sessionStorage.hasOwnProperty('sellerInfo')
-    console.log(`Does have sellerInfo property?: ${temp}`)
-
-    let sellerInfo = {}
-    if(sessionStorage.hasOwnProperty('sellerInfo')) {
-      sellerInfo = JSON.parse(sessionStorage["sellerInfo"])
-    }else{
-      const dummyData = {
-        streetAddress: `dummy streetAddress`,
-        phoneNumber: `dummy phoneNumber`,
-        emailAddress: `dummy emailtAddress`
-      }
-
-      sessionStorage["sellerInfo"] =  JSON.stringify(dummyData)
-      sellerInfo = dummyData
-    }
+    const sellerInfo = sellerInfoStorage.get();
 
     console.log(sellerInfo)
     sendResponse({ "sellerInfo": sellerInfo });
