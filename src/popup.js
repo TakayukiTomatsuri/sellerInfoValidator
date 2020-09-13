@@ -176,9 +176,13 @@ import './popup.css';
           console.log("Result for GET-SELLER-INFO are returned!!")
           console.log(response);
 
+          // popup内に表示
           document.getElementById('streetAddressVal').innerHTML = response.sellerInfo.streetAddress;
           document.getElementById('phoneNumberVal').innerHTML = response.sellerInfo.phoneNumber;
           document.getElementById('emailAddressVal').innerHTML = response.sellerInfo.emailAddress;
+
+          
+
         }
       );
     });

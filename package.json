@@ -16,5 +16,8 @@
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12",
     "webpack-merge": "^5.1.4"
+  },
+  "dependencies": {
+    "imi-enrichment-address": "file:../../../../Downloads/imi-enrichment-address-2.0.0.tgz"
   }
 }
