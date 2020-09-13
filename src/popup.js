@@ -2,6 +2,12 @@
 
 import './popup.css';
 
+// import chalk from "chalk";
+// var cookieParser = require('cookie-parser');
+// var ping = require('ping');
+// const enrichment = require("imi-enrichment-address")
+// const enrichment = require("../node_modules/imi-enrichment-address/bundle.js")
+
 (function() {
   // We will make use of Storage API to get and store `count` value
   // More information on Storage API can we found at
@@ -178,6 +184,21 @@ import './popup.css';
 
           // popup内に表示
           document.getElementById('streetAddressVal').innerHTML = response.sellerInfo.streetAddress;
+
+
+          // import chalk from "chalk";
+          // console.log(chalk.bgCyan("これはテストメッセージです"));
+          // const enrichment = require("imi-enrichment-address")
+          // enrichment('東京都千代田区霞が関1-3-1').then(json => {
+          //   console.log(JSON.stringify(json));
+          // });
+
+          // var hosts = ['google.com'];
+          // ping.sys.probe(host, function(isAlive){
+          //   var msg = isAlive ? 'host ' + host + ' is alive' : 'host ' + host + ' is dead';
+          //   console.log(msg);
+          // });
+          
           document.getElementById('phoneNumberVal').innerHTML = response.sellerInfo.phoneNumber;
           document.getElementById('emailAddressVal').innerHTML = response.sellerInfo.emailAddress;
 

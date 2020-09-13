@@ -8,6 +8,7 @@
     "build": "webpack --mode=production --config config/webpack.config.js"
   },
   "devDependencies": {
+    "@types/node": "^14.10.1",
     "copy-webpack-plugin": "^6.1.0",
     "css-loader": "^4.3.0",
     "file-loader": "^6.1.0",
@@ -18,6 +19,10 @@
     "webpack-merge": "^5.1.4"
   },
   "dependencies": {
-    "imi-enrichment-address": "file:../../../../Downloads/imi-enrichment-address-2.0.0.tgz"
+    "chalk": "^4.1.0",
+    "child_process": "^1.0.2",
+    "cookie-parser": "^1.4.5",
+    "imi-enrichment-address": "file:../../../../Downloads/imi-enrichment-address-2.0.0.tgz",
+    "ping": "^0.2.3"
   }
 }

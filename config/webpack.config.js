@@ -12,6 +12,16 @@ const config = merge(common, {
     contentScript: PATHS.src + '/contentScript.js',
     background: PATHS.src + '/background.js',
   },
+  target: 'web'
+  // target: 'node',
+  // node: {
+  //   fs: 'empty',
+  // }
+  // node: {
+  //   fs: 'empty',
+  //   child_process: 'empty',
+  //   module: 'empty',
+  // }
 });
 
 module.exports = config;
