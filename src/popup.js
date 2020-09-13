@@ -184,7 +184,8 @@ import './popup.css';
 
           // popup内に表示
           document.getElementById('streetAddressVal').innerHTML = response.sellerInfo.streetAddress;
-
+          document.getElementById('streetAddressValidationResult').innerHTML = "正当"
+          document.getElementById('streetAddressImg').innerHTML = `<iframe src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCMdL_FxjySdXcAVkYtK0Q3D9r_Z3mX_A0&zoom=17&maptype=satellite&q=${response.sellerInfo.streetAddress}"></iframe>`
 
           // import chalk from "chalk";
           // console.log(chalk.bgCyan("これはテストメッセージです"));

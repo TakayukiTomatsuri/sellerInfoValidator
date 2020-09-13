@@ -1,17 +1,18 @@
-# <img src="public/icons/icon_48.png" width="45" align="left"> My Extension
+## 動かし方
 
-My Chrome Extension
+```
+# このリポジトリをクローンする
+git clone https://github.com/.....
 
-## Features
+# クローンしてできたリポジトリに入る
+cd sellerInfoValidator
 
-- Feature 1
-- Feature 2
+# ビルドして結果を./buildに配置する. ファイルに変更があると自動で再ビルドされる
+npm run watch
+```
 
-## Install
+Google Chromeで `chrome://extentions`にアクセス、右上のデベロッパーモードをオンにして、左上の「パッケージ化されていない拡張機能を読み込む」ボタンから `./build` を指定して読み込み。
 
-[**Chrome** extension]() <!-- TODO: Add chrome extension link inside parenthesis -->
+すると作成中の拡張機能が使えるようになる。
 
-## Contribution
-
-Suggestions and pull requests are welcomed!.
-
+ソースに変更があれば自動でビルドされ、Chrome側でも自動で読み込まれるはずだが、ショートカットキーの変更など一部の変更は、拡張機能を削除して入れ直さないと反映されない。
