@@ -22,7 +22,6 @@
     "chalk": "^4.1.0",
     "child_process": "^1.0.2",
     "cookie-parser": "^1.4.5",
-    "imi-enrichment-address": "file:../../../../Downloads/imi-enrichment-address-2.0.0.tgz",
     "ping": "^0.2.3"
   }
 }
