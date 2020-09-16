@@ -44,14 +44,14 @@
     },
     "select-phone-number": {
       "suggested_key": {
-        "default": "Ctrl+Shift+O",
+        "default": "Ctrl+Shift+U",
         "mac": "Command+Shift+O"
       },
       "description": "Selecting text as a phone number."
     },
     "select-email-address": {
       "suggested_key": {
-        "default": "Ctrl+Shift+P",
+        "default": "Ctrl+Shift+H",
         "mac": "Command+Shift+P"
       },
       "description": "Selecting text as a email address."

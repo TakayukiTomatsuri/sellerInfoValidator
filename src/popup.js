@@ -196,12 +196,19 @@ import './popup.css';
           })
           // ↑（コールバック関数が両方呼ばれうる場合はこのやり方ダメだが、たぶん片方しか呼ばれないハズ）
           // 住所の周辺の航空写真
-          // (Google Maps Embed APIキーは公開しないでください。ふつうはリファラを利用し、埋め込み先サイトを制限するがChrome拡張機能だとサイトとかじゃないのでリファラで制限できるのか...?)
+          // (Google Maps Embed APIキーはまだ公開しないでください。無制限に使える状態です。いくら使ってもお金かからないはずだけど、BANされるかも。ふつうはリファラを利用し、埋め込み先サイトを制限するがChrome拡張機能だとサイトとかじゃないのでリファラで制限できるのか...?)
           document.getElementById('streetAddressImg').innerHTML = `<iframe src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCMdL_FxjySdXcAVkYtK0Q3D9r_Z3mX_A0&zoom=17&maptype=satellite&q=${response.sellerInfo.streetAddress}"></iframe>`
 
-          // 電話番号          
+          // 電話番号の生の値        
           document.getElementById('phoneNumberVal').innerHTML = response.sellerInfo.phoneNumber;
-
+          // 電話番号の正当性の確認結果
+          const phoneNumValidationResult = IMIEnrichmentContact(response.sellerInfo.phoneNumber);
+          if(phoneNumValidationResult.hasOwnProperty('メタデータ')){
+            document.getElementById('phoneNumberValidationResult').innerHTML = phoneNumValidationResult.メタデータ.説明;
+          }else{
+            document.getElementById('phoneNumberValidationResult').innerHTML = "正当";
+          }
+         
           // Eメールアドレス
           document.getElementById('emailAddressVal').innerHTML = response.sellerInfo.emailAddress;
         }
