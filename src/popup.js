@@ -183,56 +183,30 @@ import './popup.css';
           console.log(response);
 
           // popup内に表示
+
+          // 住所の生の値
           document.getElementById('streetAddressVal').innerHTML = response.sellerInfo.streetAddress;
-          document.getElementById('streetAddressValidationResult').innerHTML = "正当"
+          // 住所の正当性の確認結果
+          getLatLng(response.sellerInfo.streetAddress, (latlng) => {
+            // 普通に緯度経度を返してきたら正当
+            document.getElementById('streetAddressValidationResult').innerHTML = "正当"
+          },(error) => {
+            // もしエラーを返すためのコールバック関数が呼ばれたら、正当じゃないってこと
+            document.getElementById('streetAddressValidationResult').innerHTML = error
+          })
+          // ↑（コールバック関数が両方呼ばれうる場合はこのやり方ダメだが、たぶん片方しか呼ばれないハズ）
+          // 住所の周辺の航空写真
+          // (Google Maps Embed APIキーは公開しないでください。ふつうはリファラを利用し、埋め込み先サイトを制限するがChrome拡張機能だとサイトとかじゃないのでリファラで制限できるのか...?)
           document.getElementById('streetAddressImg').innerHTML = `<iframe src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCMdL_FxjySdXcAVkYtK0Q3D9r_Z3mX_A0&zoom=17&maptype=satellite&q=${response.sellerInfo.streetAddress}"></iframe>`
 
-          // import chalk from "chalk";
-          // console.log(chalk.bgCyan("これはテストメッセージです"));
-          // const enrichment = require("imi-enrichment-address")
-          // enrichment('東京都千代田区霞が関1-3-1').then(json => {
-          //   console.log(JSON.stringify(json));
-          // });
-
-          // var hosts = ['google.com'];
-          // ping.sys.probe(host, function(isAlive){
-          //   var msg = isAlive ? 'host ' + host + ' is alive' : 'host ' + host + ' is dead';
-          //   console.log(msg);
-          // });
-          
+          // 電話番号          
           document.getElementById('phoneNumberVal').innerHTML = response.sellerInfo.phoneNumber;
+
+          // Eメールアドレス
           document.getElementById('emailAddressVal').innerHTML = response.sellerInfo.emailAddress;
-
-          
-
         }
       );
     });
-    // // とりあえず、ダミーデータを挿入する
-    // chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-    //   const tab = tabs[0];
-
-    //   console.log("Creating dummy data...")
-    //   console.log(tab.id)
-
-    //   chrome.tabs.sendMessage(
-    //     tab.id,
-    //     {
-    //       type: 'SET-SELLER-INFO',
-    //       payload: {
-    //         streetAddress: `dummy streetAddress for ${tab.id}`,
-    //         phoneNumber: `dummy phoneNumber for ${tab.id}`,
-    //         emailAddress: `dummy emailtAddress for ${tab.id}`
-    //       }
-    //     },
-    //     response => {
-    //       console.log("Result for SET-SELLER-INFO are returned!")
-    //       console.log(response);
-
-
-    //     }
-    //   );
-    // });
   }
   document.addEventListener('DOMContentLoaded', checkSellerInfo);
 
