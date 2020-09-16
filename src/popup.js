@@ -105,69 +105,12 @@ import './popup.css';
 
   // ---- 
 
-  // const streetAddressStorage = {
-  //   get: cb => {
-  //     chrome.storage.sync.get(['streetAddress'], result => {
-  //       cb(result.streetAddress);
-  //     });
-  //   },
-  //   set: (value, cb) => {
-  //     chrome.storage.sync.set(
-  //       {
-  //         streetAddress: value,
-  //       },
-  //       () => {
-  //         cb();
-  //       }
-  //     );
-  //   },
-  // };
-
-  // const phoneNumberStorage = {
-  //   get: cb => {
-  //     chrome.storage.sync.get(['phoneNumber'], result => {
-  //       cb(result.phoneNumber);
-  //     });
-  //   },
-  //   set: (value, cb) => {
-  //     chrome.storage.sync.set(
-  //       {
-  //         phoneNumber: value,
-  //       },
-  //       () => {
-  //         cb();
-  //       }
-  //     );
-  //   },
-  // };
-
-  // const emailAddressStorage = {
-  //   get: cb => {
-  //     chrome.storage.sync.get(['emailAddress'], result => {
-  //       cb(result.emailAddress);
-  //     });
-  //   },
-  //   set: (value, cb) => {
-  //     chrome.storage.sync.set(
-  //       {
-  //         emailAddress: value,
-  //       },
-  //       () => {
-  //         cb();
-  //       }
-  //     );
-  //   },
-  // };
-
-
   function checkSellerInfo() {
     document.getElementById('streetAddressVal').innerHTML = "replaced_OK!";
 
     document.getElementById('streetAddressBtn').addEventListener('click', () => {
       console.log("Button streetAddressBtn clicked!");
     });
-
-
 
     // データをフェッチする（ダミーデータがない場合、contentScript.jsの側で自動で作る）
     chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
@@ -209,8 +152,66 @@ import './popup.css';
             document.getElementById('phoneNumberValidationResult').innerHTML = "正当";
           }
          
-          // Eメールアドレス
+          // Eメールアドレスの生の値
           document.getElementById('emailAddressVal').innerHTML = response.sellerInfo.emailAddress;
+          // メアドの形式確認
+          // <!-- // See http://rosskendall.com/blog/web/javascript-function-to-check-an-email-address-conforms-to-rfc822 -->
+          // function isEmail(email){
+          //   return /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*$/.test( email );	
+          // }
+      
+          // 正規表現で確かめる関数、ここ→からコピペした　　https://www.w3resource.com/javascript/form/example-javascript-form-validation-email-REC-2822.html
+          function isEmail(text)
+          {
+            var mailformat = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
+            if(text.match(mailformat))
+            {
+              // document.form1.text1.focus();
+              // alert("Valid email address!");
+              return true;
+            }
+            else
+            {
+              // alert("You have entered an invalid email address!");
+              // document.form1.text1.focus();
+              return false;
+            }
+          }
+
+          if(isEmail(response.sellerInfo.emailAddress)){
+            document.getElementById('emailAddressValidationResult').innerHTML = "正当";
+          }else{
+            document.getElementById('emailAddressValidationResult').innerHTML = "eメールアドレスがRFC2822に沿っていません";
+          }
+
+          // メアドのドメイン名のレピュテーションを調べる
+          console.log("Querying reputation...");
+          // const emailDomainName = `${response.sellerInfo.emailAddress}`.replace(/.*?@/, '');
+          const urlEmailReputation = `https://emailrep.io/${response.sellerInfo.emailAddress}`; // リクエスト先URL
+          console.log(urlEmailReputation);
+          let request = new XMLHttpRequest();
+          request.open('GET', urlEmailReputation);
+          request.onreadystatechange = function () {
+              if (request.readyState != 4) {
+                  // リクエスト中
+                  console.log("requesting...");
+              } else if (request.status != 200) {
+                  // 失敗
+                  document.getElementById('emailAddressReputation').innerHTML = "取得に失敗しました";
+              } else {
+                  // 取得成功
+                  // const resultJson = JSON.parse(request.responseText);
+                  // TODO: curlでやったときみたいにJSONだけ返ってはこない。ページ丸ごと来る。User-Agentを見て応答を変えてる？
+                  // TODO: これ、1日のアクセス数が厳しくてたぶん10回かそれ以下くらいしか使えない感じ
+                  const resultJson = request.responseText;
+                  console.log(resultJson);
+                  document.getElementById('emailAddressReputation').innerHTML = resultJson;
+              }
+          };
+          request.send();
+
+          
+          
         }
       );
     });

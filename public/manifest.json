@@ -21,7 +21,8 @@
     "default_popup": "popup.html"
   },
   "permissions": [
-    "storage"
+    "storage",
+    "https://emailrep.io/*"
   ],
   "content_scripts": [
     {
