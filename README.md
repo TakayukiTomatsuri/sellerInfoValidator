@@ -16,7 +16,7 @@ npm install
 npm run watch
 ```
 
-Google Chromeで `chrome://extentions`にアクセス、右上のデベロッパーモードをオンにして、左上の「パッケージ化されていない拡張機能を読み込む」ボタンから `./build` を指定して読み込み。
+Google Chromeで `chrome://extensions`にアクセス、右上のデベロッパーモードをオンにして、左上の「パッケージ化されていない拡張機能を読み込む」ボタンから `./build` を指定して読み込み。
 
 すると作成中の拡張機能が使えるようになる。
 
