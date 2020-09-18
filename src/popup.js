@@ -142,6 +142,41 @@ import './popup.css';
           // (Google Maps Embed APIキーはまだ公開しないでください。無制限に使える状態です。いくら使ってもお金かからないはずだけど、BANされるかも。ふつうはリファラを利用し、埋め込み先サイトを制限するがChrome拡張機能だとサイトとかじゃないのでリファラで制限できるのか...?)
           document.getElementById('streetAddressImg').innerHTML = `<iframe src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCMdL_FxjySdXcAVkYtK0Q3D9r_Z3mX_A0&zoom=17&maptype=satellite&q=${response.sellerInfo.streetAddress}"></iframe>`
 
+          // 郵便番号の生の値
+          document.getElementById('streetAddressImg').innerHTML = response.sellerInfo.postalCode;
+          console.log(`postalCode : ${ response.sellerInfo.postalCode}`);
+          // 郵便番号から検索した住所
+          const urlZipcodeForward = `https://zipcoda.net/api?zipcode=${response.sellerInfo.postalCode}`;
+          console.log(`Zipocode Forward search url: ${urlZipcodeForward}`);
+          let requestZipcodeForward = new XMLHttpRequest();
+          requestZipcodeForward.open('GET', urlZipcodeForward);
+          requestZipcodeForward.onreadystatechange = function () {
+              if (requestZipcodeForward.readyState != 4) {
+                  // リクエスト中
+                  console.log("requesting...");
+              } else if (requestZipcodeForward.status != 200) {
+                  // 失敗
+                  document.getElementById('postalCodeConvertedToStreetAddress').innerHTML = "取得に失敗しました";
+              } else {
+                  // 取得成功
+                  const resultJson = JSON.parse(requestZipcodeForward.responseText);
+                  console.log(resultJson);
+                  
+                  if(resultJson.hasOwnProperty('items')){
+                    if(resultJson.items.length <= 1){
+                      document.getElementById('postalCodeConvertedToStreetAddress').innerHTML = resultJson.items[0].components.join('');
+                    }else{
+                      document.getElementById('postalCodeConvertedToStreetAddress').innerHTML = "対応する候補が複数存在します";
+                    }
+                  }else{
+                    document.getElementById('postalCodeConvertedToStreetAddress').innerHTML = "住所は定義されていません"; 
+                  }
+
+              }
+          };
+          requestZipcodeForward.send();
+
+
           // 電話番号の生の値        
           document.getElementById('phoneNumberVal').innerHTML = response.sellerInfo.phoneNumber;
           // 電話番号の正当性の確認結果
@@ -215,32 +250,32 @@ import './popup.css';
             document.getElementById('emailAddressValidationResult').innerHTML = "eメールアドレスがRFC2822に沿っていません";
           }
 
-          // メアドのドメイン名のレピュテーションを調べる
-          console.log("Querying reputation...");
-          // const emailDomainName = `${response.sellerInfo.emailAddress}`.replace(/.*?@/, '');
-          const urlEmailReputation = `https://emailrep.io/${response.sellerInfo.emailAddress}`; // リクエスト先URL
-          console.log(urlEmailReputation);
-          let request_mailrepio = new XMLHttpRequest();
-          request_mailrepio.open('GET', urlEmailReputation);
-          request_mailrepio.setRequestHeader('Accept', 'application/json'); // ヘッダにこれがあればJSONで返してくれる
-          request_mailrepio.onreadystatechange = function () {
-              if (request_mailrepio.readyState != 4) {
-                  // リクエスト中
-                  console.log("requesting...");
-              } else if (request_mailrepio.status != 200) {
-                  // 失敗
-                  document.getElementById('emailAddressReputation').innerHTML = "取得に失敗しました";
-              } else {
-                  // 取得成功
-                  // const resultJson = JSON.parse(request.responseText);
-                  // TODO: curlでやったときみたいにJSONだけ返ってはこない。ページ丸ごと来る。User-Agentを見て応答を変えてる？
-                  // TODO: これ、1日のアクセス数が厳しくてたぶん10回かそれ以下くらいしか使えない感じ
-                  const resultJson = request_mailrepio.responseText;
-                  console.log(resultJson);
-                  document.getElementById('emailAddressReputation').innerHTML = resultJson;
-              }
-          };
-          request_mailrepio.send();
+          // // メアドのドメイン名のレピュテーションを調べる
+          // console.log("Querying reputation...");
+          // // const emailDomainName = `${response.sellerInfo.emailAddress}`.replace(/.*?@/, '');
+          // const urlEmailReputation = `https://emailrep.io/${response.sellerInfo.emailAddress}`; // リクエスト先URL
+          // console.log(urlEmailReputation);
+          // let request_mailrepio = new XMLHttpRequest();
+          // request_mailrepio.open('GET', urlEmailReputation);
+          // request_mailrepio.setRequestHeader('Accept', 'application/json'); // ヘッダにこれがあればJSONで返してくれる
+          // request_mailrepio.onreadystatechange = function () {
+          //     if (request_mailrepio.readyState != 4) {
+          //         // リクエスト中
+          //         console.log("requesting...");
+          //     } else if (request_mailrepio.status != 200) {
+          //         // 失敗
+          //         document.getElementById('emailAddressReputation').innerHTML = "取得に失敗しました";
+          //     } else {
+          //         // 取得成功
+          //         // const resultJson = JSON.parse(request.responseText);
+          //         // TODO: curlでやったときみたいにJSONだけ返ってはこない。ページ丸ごと来る。User-Agentを見て応答を変えてる？
+          //         // TODO: これ、1日のアクセス数が厳しくてたぶん10回かそれ以下くらいしか使えない感じ
+          //         const resultJson = request_mailrepio.responseText;
+          //         console.log(resultJson);
+          //         document.getElementById('emailAddressReputation').innerHTML = resultJson;
+          //     }
+          // };
+          // request_mailrepio.send();
 
           
           

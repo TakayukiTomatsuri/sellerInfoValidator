@@ -79,12 +79,12 @@ chrome.runtime.onInstalled.addListener(() => {
     title: '住所として選択',
     contexts:["selection"] 
   });
-  // chrome.contextMenus.create({
-  //   id: 'postalCode',
-  //   parentId: 'parent',
-  //   title: '郵便番号として選択',
-  //   contexts:["selection"] 
-  // });
+  chrome.contextMenus.create({
+    id: 'postalCode',
+    parentId: 'parent',
+    title: '郵便番号として選択',
+    contexts:["selection"] 
+  });
   chrome.contextMenus.create({
     id: 'phoneNumber',
     parentId: 'parent',
@@ -117,6 +117,9 @@ chrome.contextMenus.onClicked.addListener(item => {
   switch(item.menuItemId){
     case "streetAddress":
       sendMessageToCurrentTab({text: "select-street-address"});
+      break;
+    case "postalCode":
+      sendMessageToCurrentTab({text: "select-postal-code"});
       break;
     case "phoneNumber":
       sendMessageToCurrentTab({text: "select-phone-number"});

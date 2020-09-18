@@ -46,6 +46,7 @@ const sellerInfoStorage = {
     }else{
       const dummyData = {
         streetAddress: `dummy streetAddress`,
+        postalCode: `dummy postalCode`,
         phoneNumber: `dummy phoneNumber`,
         emailAddress: `dummy emailtAddress`
       };
@@ -77,6 +78,20 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
     let sellerInfo = sellerInfoStorage.get();
     sellerInfo.streetAddress = selection
+    console.log(sellerInfo)
+    sellerInfoStorage.set(sellerInfo)
+
+    sendResponse({ "text": selection });
+    return true;
+  }
+  // 選択されたテキストを住所(or電話番号)などとして記録する
+  if (request.text == "select-postal-code") {
+    console.log(`hit command select-postal-code!!`);
+    const selection = window.getSelection().toString()
+    console.log(`selected: ${selection}`)
+
+    let sellerInfo = sellerInfoStorage.get();
+    sellerInfo.postalCode = selection
     console.log(sellerInfo)
     sellerInfoStorage.set(sellerInfo)
 
