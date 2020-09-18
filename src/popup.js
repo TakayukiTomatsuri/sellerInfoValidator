@@ -191,6 +191,7 @@ import './popup.css';
           console.log(urlEmailReputation);
           let request = new XMLHttpRequest();
           request.open('GET', urlEmailReputation);
+          request.setRequestHeader('Accept', 'application/json'); // ヘッダにこれがあればJSONで返してくれる
           request.onreadystatechange = function () {
               if (request.readyState != 4) {
                   // リクエスト中
