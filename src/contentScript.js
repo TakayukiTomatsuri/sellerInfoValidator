@@ -11,14 +11,14 @@
 // For more information on Content Scripts,
 // See https://developer.chrome.com/extensions/content_scripts
 
+// （テンプレートに元からあったやつ）
 // Log `title` of current active web page
 const pageTitle = document.head.getElementsByTagName('title')[0].innerHTML;
 console.log(
   `Page title is: '${pageTitle}' - evaluated by Chrome extension's 'contentScript.js' file`
 );
 
-
-
+// （テンプレートに元からあったやつ）
 // Communicate with background file by sending a message
 chrome.runtime.sendMessage(
   {
@@ -32,37 +32,42 @@ chrome.runtime.sendMessage(
   }
 );
 
+// これを介して販売者情報を読み書きする
+// 販売者情報はタブごとに持っててほしいからcontentScript.jsで記録している
+const sellerInfoStorage = {
+  // JSONオブジェクトを受け取る。JSON文字列に直して格納（このやりかたあまりよくなかった）
+  get:() => {
+    const temp = sessionStorage.hasOwnProperty('sellerInfo');
+    console.log(`Does have sellerInfo property?: ${temp}`);
 
-  const sellerInfoStorage = {
-    get:() => {
-      const temp = sessionStorage.hasOwnProperty('sellerInfo');
-      console.log(`Does have sellerInfo property?: ${temp}`);
-  
-      let sellerInfo = {};
-      if(sessionStorage.hasOwnProperty('sellerInfo')) {
-        sellerInfo = JSON.parse(sessionStorage["sellerInfo"]);
-      }else{
-        const dummyData = {
-          streetAddress: `dummy streetAddress`,
-          phoneNumber: `dummy phoneNumber`,
-          emailAddress: `dummy emailtAddress`
-        };
-  
-        sessionStorage["sellerInfo"] =  JSON.stringify(dummyData);
-        sellerInfo = dummyData;
-      }
+    let sellerInfo = {};
+    if(sessionStorage.hasOwnProperty('sellerInfo')) {
+      sellerInfo = JSON.parse(sessionStorage["sellerInfo"]);
+    }else{
+      const dummyData = {
+        streetAddress: `dummy streetAddress`,
+        phoneNumber: `dummy phoneNumber`,
+        emailAddress: `dummy emailtAddress`
+      };
 
-      return sellerInfo;
-    },
-    set: (sellerInfo) => {
-      sessionStorage["sellerInfo"] = JSON.stringify(sellerInfo);
-    },
-  };
+      // JSON形式のオブジェクトを格納するときは文字列に直さなくちゃいけないらしい
+      sessionStorage["sellerInfo"] =  JSON.stringify(dummyData);
+      sellerInfo = dummyData;
+    }
 
-// Listen for message
+    return sellerInfo;
+  },
+  // JSON文字列を取り出しJSONオブジェクトにして返す
+  set: (sellerInfo) => {
+    sessionStorage["sellerInfo"] = JSON.stringify(sellerInfo);
+  },
+};
+
+// メッセージが送られてきたら呼ばれる関数を登録する
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log(`recv MSG!!`);
 
+  // 選択されたテキストを住所(or電話番号)などとして記録する
   if (request.text == "select-street-address") {
     console.log(`hit command select-street-address!!`);
     const selection = window.getSelection().toString()
@@ -105,18 +110,18 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   
-
+  // （テンプレートにもともとあったやつ）
   if (request.type === 'COUNT') {
     console.log("type   COUNT received.")
     console.log(`Current count is ${request.payload.count}`);
   }
 
+  // 販売者情報をSET/GETするためのもの
   if (request.type === 'SET-SELLER-INFO') {
     console.log("type SET-SELLER-INFO received.")
     console.log(request.payload)
     console.log(JSON.stringify(request.payload) )
     // JSON形式のオブジェクトを格納するときは文字列に直さなくちゃいけないらしい
-    // sessionStorage["sellerInfo"] = JSON.stringify(request.payload);
     sellerInfoStorage.set(request.payload)
   }
 

@@ -22,7 +22,9 @@
   },
   "permissions": [
     "storage",
-    "https://emailrep.io/*"
+    "https://emailrep.io/*",
+    "acriveTab",
+    "contextMenus"
   ],
   "content_scripts": [
     {
