@@ -79,6 +79,12 @@ chrome.runtime.onInstalled.addListener(() => {
     title: '住所として選択',
     contexts:["selection"] 
   });
+  // chrome.contextMenus.create({
+  //   id: 'postalCode',
+  //   parentId: 'parent',
+  //   title: '郵便番号として選択',
+  //   contexts:["selection"] 
+  // });
   chrome.contextMenus.create({
     id: 'phoneNumber',
     parentId: 'parent',

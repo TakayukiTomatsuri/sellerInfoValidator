@@ -146,11 +146,42 @@ import './popup.css';
           document.getElementById('phoneNumberVal').innerHTML = response.sellerInfo.phoneNumber;
           // 電話番号の正当性の確認結果
           const phoneNumValidationResult = IMIEnrichmentContact(response.sellerInfo.phoneNumber);
+          // メタデータって項目をもってたら電話番号の形式がおかしくてエラーってこと
           if(phoneNumValidationResult.hasOwnProperty('メタデータ')){
             document.getElementById('phoneNumberValidationResult').innerHTML = phoneNumValidationResult.メタデータ.説明;
           }else{
             document.getElementById('phoneNumberValidationResult').innerHTML = "正当";
           }
+          // 電話番号の種別やMA（区域）の確認
+          const urlNb3PhoneNumInfoApi = `https://nb3.jp/api/tel/${response.sellerInfo.phoneNumber}`;
+          let request_nb3 = new XMLHttpRequest();
+          request_nb3.open('GET', urlNb3PhoneNumInfoApi);
+          request_nb3.onreadystatechange = function () {
+              if (request_nb3.readyState != 4) {
+                  // リクエスト中
+                  console.log("requesting...");
+              } else if (request_nb3.status != 200) {
+                  // 失敗
+                  document.getElementById('phoneNumberType').innerHTML = "取得に失敗しました";
+                  document.getElementById('phoneNumberMa').innerHTML = "取得に失敗しました";
+              } else {
+                  // 取得成功
+                  const resultJson = JSON.parse(request_nb3.responseText);
+                  console.log(resultJson);
+                  if(resultJson.data.hasOwnProperty('kind')){
+                    document.getElementById('phoneNumberType').innerHTML = resultJson.data.kind;
+                  }else{
+                    document.getElementById('phoneNumberType').innerHTML = '電話番号種別は定義されていません';
+                  }
+                  
+                  if(resultJson.data.hasOwnProperty('ma')){
+                    document.getElementById('phoneNumberMa').innerHTML = resultJson.data.ma;
+                  }else{
+                    document.getElementById('phoneNumberMa').innerHTML = "単位料金区域は定義されていません";
+                  }
+              }
+          };
+          request_nb3.send();
          
           // Eメールアドレスの生の値
           document.getElementById('emailAddressVal').innerHTML = response.sellerInfo.emailAddress;
@@ -189,14 +220,14 @@ import './popup.css';
           // const emailDomainName = `${response.sellerInfo.emailAddress}`.replace(/.*?@/, '');
           const urlEmailReputation = `https://emailrep.io/${response.sellerInfo.emailAddress}`; // リクエスト先URL
           console.log(urlEmailReputation);
-          let request = new XMLHttpRequest();
-          request.open('GET', urlEmailReputation);
-          request.setRequestHeader('Accept', 'application/json'); // ヘッダにこれがあればJSONで返してくれる
-          request.onreadystatechange = function () {
-              if (request.readyState != 4) {
+          let request_mailrepio = new XMLHttpRequest();
+          request_mailrepio.open('GET', urlEmailReputation);
+          request_mailrepio.setRequestHeader('Accept', 'application/json'); // ヘッダにこれがあればJSONで返してくれる
+          request_mailrepio.onreadystatechange = function () {
+              if (request_mailrepio.readyState != 4) {
                   // リクエスト中
                   console.log("requesting...");
-              } else if (request.status != 200) {
+              } else if (request_mailrepio.status != 200) {
                   // 失敗
                   document.getElementById('emailAddressReputation').innerHTML = "取得に失敗しました";
               } else {
@@ -204,12 +235,12 @@ import './popup.css';
                   // const resultJson = JSON.parse(request.responseText);
                   // TODO: curlでやったときみたいにJSONだけ返ってはこない。ページ丸ごと来る。User-Agentを見て応答を変えてる？
                   // TODO: これ、1日のアクセス数が厳しくてたぶん10回かそれ以下くらいしか使えない感じ
-                  const resultJson = request.responseText;
+                  const resultJson = request_mailrepio.responseText;
                   console.log(resultJson);
                   document.getElementById('emailAddressReputation').innerHTML = resultJson;
               }
           };
-          request.send();
+          request_mailrepio.send();
 
           
           
