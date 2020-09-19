@@ -188,7 +188,9 @@ import './popup.css';
             return sellerInfoStreetAddress; 
           }
 
-          checkStreetAddress(sellerInfo.streetAddress);
+          if(sellerInfo.hasOwnProperty('streetAddress')){
+            checkStreetAddress(sellerInfo.streetAddress);
+          }
 
           // 郵便番号についての調査を行う
           function checkPostalCode(sellerInfoPostalCode){
@@ -235,7 +237,9 @@ import './popup.css';
             return sellerInfoPostalCode; 
           }
 
-          checkPostalCode(sellerInfo.postalCode);
+          if(sellerInfo.hasOwnProperty('postalCode')){
+            checkPostalCode(sellerInfo.postalCode);
+          }
 
           // 電話番号について調査する
           function checkPhoneNumber(sellerInfoPhoneNumber){
@@ -288,7 +292,9 @@ import './popup.css';
             return sellerInfoPhoneNumber;
           }
 
-          checkPhoneNumber(sellerInfo.phoneNumber);
+          if(sellerInfo.hasOwnProperty('phoneNumber')){
+            checkPhoneNumber(sellerInfo.phoneNumber);
+          }
 
          
           // メアドに関する調査をする
@@ -361,7 +367,10 @@ import './popup.css';
             return sellerInfoEmailAddress;
           }
 
-          checkEmailAddress(sellerInfo.emailAddress);
+          if(sellerInfo.hasOwnProperty('emailAddress')){
+            checkEmailAddress(sellerInfo.emailAddress);
+          }
+
          
           
 

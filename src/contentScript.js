@@ -98,24 +98,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       if(sessionStorage.hasOwnProperty('sellerInfo')) {
         sellerInfo = JSON.parse(sessionStorage["sellerInfo"]);
       }else{
-        const dummyData = {
-          streetAddress: {
-            rawValue: `dummy streetAddress`,
-          },
-          postalCode:{
-            rawValue: `dummy postalCode`,
-          } ,
-          phoneNumber: {
-            rawValue: `dummy phoneNumber`,
-          },
-          emailAddress: {
-            rawValue: `dummy emailtAddress`,
-          },
-        };
-
+        // もしsellerInfoが存在しないなら空のオブジェクトを保存しとく
         // JSON形式のオブジェクトを格納するときは文字列に直さなくちゃいけないらしい
-        sessionStorage["sellerInfo"] =  JSON.stringify(dummyData);
-        sellerInfo = dummyData;
+        const emptyObject = {};
+        sessionStorage["sellerInfo"] =  JSON.stringify(emptyObject);
+        sellerInfo = emptyObject;
       }
 
       return sellerInfo;

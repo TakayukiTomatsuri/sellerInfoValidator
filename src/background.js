@@ -125,7 +125,7 @@ chrome.contextMenus.onClicked.addListener(item => {
       sendMessageToCurrentTab({text: "select-phone-number"});
       break;
     case "emailAddress":
-      sendMessageToCurrentTab({text: "select-email-addreess"});
+      sendMessageToCurrentTab({text: "select-email-address"});
       break;
     default:
       console.log(`Unknown context menu selected. ${item.menuItemId}`);
