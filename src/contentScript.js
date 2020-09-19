@@ -32,41 +32,107 @@ chrome.runtime.sendMessage(
   }
 );
 
-// これを介して販売者情報を読み書きする
-// 販売者情報はタブごとに持っててほしいからcontentScript.jsで記録している
-const sellerInfoStorage = {
-  // JSONオブジェクトを受け取る。JSON文字列に直して格納（このやりかたあまりよくなかった）
-  get:() => {
-    const temp = sessionStorage.hasOwnProperty('sellerInfo');
-    console.log(`Does have sellerInfo property?: ${temp}`);
+// // これを介して販売者情報を読み書きする
+// // 販売者情報はタブごとに持っててほしいからcontentScript.jsで記録している
+// const sellerInfoStorage = {
+//   // JSON文字列を取り出しJSONオブジェクトにして返す
+//   get: function() {
+//     const temp = sessionStorage.hasOwnProperty('sellerInfo');
+//     console.log(`Does have sellerInfo property?: ${temp}`);
 
-    let sellerInfo = {};
-    if(sessionStorage.hasOwnProperty('sellerInfo')) {
-      sellerInfo = JSON.parse(sessionStorage["sellerInfo"]);
-    }else{
-      const dummyData = {
-        streetAddress: `dummy streetAddress`,
-        postalCode: `dummy postalCode`,
-        phoneNumber: `dummy phoneNumber`,
-        emailAddress: `dummy emailtAddress`
-      };
+//     let sellerInfo = {};
+//     if(sessionStorage.hasOwnProperty('sellerInfo')) {
+//       sellerInfo = JSON.parse(sessionStorage["sellerInfo"]);
+//     }else{
+//       const dummyData = {
+//         streetAddress: {
+//           rawValue: `dummy streetAddress`,
+//         },
+//         postalCode:{
+//           rawValue: `dummy postalCode`,
+//         } ,
+//         phoneNumber: {
+//           rawValue: `dummy phoneNumber`,
+//         },
+//         emailAddress: {
+//           rawValue: `dummy emailtAddress`,
+//         },
+//       };
 
-      // JSON形式のオブジェクトを格納するときは文字列に直さなくちゃいけないらしい
-      sessionStorage["sellerInfo"] =  JSON.stringify(dummyData);
-      sellerInfo = dummyData;
-    }
+//       // JSON形式のオブジェクトを格納するときは文字列に直さなくちゃいけないらしい
+//       sessionStorage["sellerInfo"] =  JSON.stringify(dummyData);
+//       sellerInfo = dummyData;
+//     }
 
-    return sellerInfo;
-  },
-  // JSON文字列を取り出しJSONオブジェクトにして返す
-  set: (sellerInfo) => {
-    sessionStorage["sellerInfo"] = JSON.stringify(sellerInfo);
-  },
-};
+//     return sellerInfo;
+//   },
+//   // JavaScriptオブジェクトを受け取る。JSON文字列に直して格納（このやりかたあまりよくなかった）
+//   set: function(sellerInfo){
+//     console.log(`sellerInfoStorage.set: ${sellerInfo}`);
+//     console.log(sellerInfo);
+//     sessionStorage["sellerInfo"] = JSON.stringify(sellerInfo);
+//   },
+//   add: function(sellerInfo){
+//     console.log(`sellerInfoStorage.add: ${sellerInfo}`);
+//     console.log(sellerInfo);
+//     const currentSellerInfo = this.get();
+//     this.set( Object.assign(sellerInfo, currentSellerInfo) );
+//   }
+// };
+
+
 
 // メッセージが送られてきたら呼ばれる関数を登録する
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log(`recv MSG!!`);
+
+  // これを介して販売者情報を読み書きする
+  // 販売者情報はタブごとに持っててほしいからcontentScript.jsで記録している
+  const sellerInfoStorage = {
+    // JSON文字列を取り出しJSONオブジェクトにして返す
+    get: function() {
+      const temp = sessionStorage.hasOwnProperty('sellerInfo');
+      console.log(`Does have sellerInfo property?: ${temp}`);
+
+      let sellerInfo = {};
+      if(sessionStorage.hasOwnProperty('sellerInfo')) {
+        sellerInfo = JSON.parse(sessionStorage["sellerInfo"]);
+      }else{
+        const dummyData = {
+          streetAddress: {
+            rawValue: `dummy streetAddress`,
+          },
+          postalCode:{
+            rawValue: `dummy postalCode`,
+          } ,
+          phoneNumber: {
+            rawValue: `dummy phoneNumber`,
+          },
+          emailAddress: {
+            rawValue: `dummy emailtAddress`,
+          },
+        };
+
+        // JSON形式のオブジェクトを格納するときは文字列に直さなくちゃいけないらしい
+        sessionStorage["sellerInfo"] =  JSON.stringify(dummyData);
+        sellerInfo = dummyData;
+      }
+
+      return sellerInfo;
+    },
+    // JavaScriptオブジェクトを受け取る。JSON文字列に直して格納（このやりかたあまりよくなかった）
+    set: function(sellerInfo){
+      console.log(`sellerInfoStorage.set: ${sellerInfo}`);
+      console.log(sellerInfo);
+      sessionStorage["sellerInfo"] = JSON.stringify(sellerInfo);
+    },
+    add: function(sellerInfo){
+      console.log(`sellerInfoStorage.add: ${sellerInfo}`);
+      console.log(sellerInfo);
+      const currentSellerInfo = this.get();
+      this.set( Object.assign(currentSellerInfo, sellerInfo) );
+    }
+  };
 
   // 選択されたテキストを住所(or電話番号)などとして記録する
   if (request.text == "select-street-address") {
@@ -76,10 +142,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     // const insertContent = `<samp>${selection}</samp>`;
     // document.execCommand("insertHTML", false, insertContent);
 
-    let sellerInfo = sellerInfoStorage.get();
-    sellerInfo.streetAddress = selection
-    console.log(sellerInfo)
-    sellerInfoStorage.set(sellerInfo)
+    let sellerInfo = {};
+    sellerInfo.streetAddress = {};
+    sellerInfo.streetAddress.rawValue = selection;
+    console.log(sellerInfo);
+    sellerInfoStorage.add(sellerInfo);
 
     sendResponse({ "text": selection });
     return true;
@@ -90,10 +157,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const selection = window.getSelection().toString()
     console.log(`selected: ${selection}`)
 
-    let sellerInfo = sellerInfoStorage.get();
-    sellerInfo.postalCode = selection
-    console.log(sellerInfo)
-    sellerInfoStorage.set(sellerInfo)
+    let sellerInfo = {};
+    sellerInfo.postalCode = {};
+    sellerInfo.postalCode.rawValue = selection;
+    console.log(sellerInfo);
+    sellerInfoStorage.add(sellerInfo);
 
     sendResponse({ "text": selection });
     return true;
@@ -103,9 +171,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     console.log(`hit command select-phone-number!!`);
     const selection = window.getSelection().toString()
 
-    let sellerInfo = sellerInfoStorage.get();
-    sellerInfo.phoneNumber = selection
-    sellerInfoStorage.set(sellerInfo)
+    let sellerInfo = {};
+    sellerInfo.phoneNumber = {};
+    sellerInfo.phoneNumber.rawValue = selection;
+    console.log(sellerInfo);
+    sellerInfoStorage.add(sellerInfo);
 
     sendResponse({ "text": selection });
     return true;
@@ -116,9 +186,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     console.log(`hit command select-email-address!!`);
     const selection = window.getSelection().toString()
 
-    let sellerInfo = sellerInfoStorage.get();
-    sellerInfo.emailAddress = selection;
-    sellerInfoStorage.set(sellerInfo)
+    let sellerInfo = {};
+    sellerInfo.emailAddress = {};
+    sellerInfo.emailAddress.rawValue = selection;
+    console.log(sellerInfo);
+    sellerInfoStorage.add(sellerInfo);
 
     sendResponse({ "text": selection });
     return true;
@@ -136,7 +208,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     console.log("type SET-SELLER-INFO received.")
     console.log(request.payload)
     console.log(JSON.stringify(request.payload) )
-    // JSON形式のオブジェクトを格納するときは文字列に直さなくちゃいけないらしい
+    
     sellerInfoStorage.set(request.payload)
   }
 
@@ -148,6 +220,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     sendResponse({ "sellerInfo": sellerInfo });
     return true;
   }
+
+  // これは使われていないが将来的に必要になるかもしれない
+  // if (request.type === 'ADD-SELLER-INFO') {
+  //   console.log("type ADD-SELLER-INFO received.")
+
+  //   const sellerInfo = sellerInfoStorage.add(request.payload);
+
+  //   console.log(sellerInfo)
+  //   // sendResponse({ "sellerInfo": sellerInfo });
+  //   return true;
+  // }
 
   // Send an empty response
   // See https://github.com/mozilla/webextension-polyfill/issues/130#issuecomment-531531890
