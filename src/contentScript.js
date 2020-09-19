@@ -11,26 +11,26 @@
 // For more information on Content Scripts,
 // See https://developer.chrome.com/extensions/content_scripts
 
-// （テンプレートに元からあったやつ）
-// Log `title` of current active web page
-const pageTitle = document.head.getElementsByTagName('title')[0].innerHTML;
-console.log(
-  `Page title is: '${pageTitle}' - evaluated by Chrome extension's 'contentScript.js' file`
-);
+// // （テンプレートに元からあったやつ）
+// // Log `title` of current active web page
+// const pageTitle = document.head.getElementsByTagName('title')[0].innerHTML;
+// console.log(
+//   `Page title is: '${pageTitle}' - evaluated by Chrome extension's 'contentScript.js' file`
+// );
 
-// （テンプレートに元からあったやつ）
-// Communicate with background file by sending a message
-chrome.runtime.sendMessage(
-  {
-    type: 'GREETINGS',
-    payload: {
-      message: 'Hello, my name is Con. I am from ContentScript.',
-    },
-  },
-  response => {
-    console.log(response.message);
-  }
-);
+// // （テンプレートに元からあったやつ）
+// // Communicate with background file by sending a message
+// chrome.runtime.sendMessage(
+//   {
+//     type: 'GREETINGS',
+//     payload: {
+//       message: 'Hello, my name is Con. I am from ContentScript.',
+//     },
+//   },
+//   response => {
+//     console.log(response.message);
+//   }
+// );
 
 // // これを介して販売者情報を読み書きする
 // // 販売者情報はタブごとに持っててほしいからcontentScript.jsで記録している
@@ -184,11 +184,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   
-  // （テンプレートにもともとあったやつ）
-  if (request.type === 'COUNT') {
-    console.log("type   COUNT received.")
-    console.log(`Current count is ${request.payload.count}`);
-  }
+  // // （テンプレートにもともとあったやつ）
+  // if (request.type === 'COUNT') {
+  //   console.log("type   COUNT received.")
+  //   console.log(`Current count is ${request.payload.count}`);
+  // }
 
   // 販売者情報をSET/GETするためのもの
   if (request.type === 'SET-SELLER-INFO') {
