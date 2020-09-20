@@ -1,13 +1,13 @@
 {
   "manifest_version": 2,
-  "name": "My Extension",
+  "name": "販売者情報チェッカー",
   "version": "0.1.0",
-  "description": "My Chrome Extension",
+  "description": "販売者の住所や郵便番号、電話番号、メアドについて調査します。怪しくないかの判断にご利用ください。",
   "icons": {
-    "16": "icons/icon_16.png",
-    "32": "icons/icon_32.png",
-    "48": "icons/icon_48.png",
-    "128": "icons/icon_128.png"
+    "16": "icons/icon_s_16.png",
+    "32": "icons/icon_s_32.png",
+    "48": "icons/icon_s_48.png",
+    "128": "icons/icon_s_128.png"
   },
   "content_security_policy": "script-src 'self' https://cdn.geolonia.com; object-src 'self'",
   "background": {
@@ -23,7 +23,7 @@
   "permissions": [
     "storage",
     "https://emailrep.io/*",
-    "acriveTab",
+    "activeTab",
     "contextMenus"
   ],
   "content_scripts": [
