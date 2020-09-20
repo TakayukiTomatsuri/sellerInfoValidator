@@ -47,6 +47,10 @@ code {
     border-radius: 2px;
 }
 
+.research-info-title {
+    font-weight: bold; 
+}
+
 .counter-label {
     font-size: 12px;
     margin-bottom: 5px;
