@@ -108,8 +108,6 @@ import './popup.css';
   // ---- 
 
   function checkSellerInfo() {
-    document.getElementById('streetAddressVal').innerHTML = "replaced_OK!";
-
     // テンプレートにもとからあるやつ　
     // document.getElementById('streetAddressBtn').addEventListener('click', () => {
     //   console.log("Button streetAddressBtn clicked!");
