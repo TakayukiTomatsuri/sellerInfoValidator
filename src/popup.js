@@ -358,11 +358,10 @@ import './popup.css';
                   } else {
                       // 取得成功
                       // const resultJson = JSON.parse(request.responseText);
-                      // TODO: curlでやったときみたいにJSONだけ返ってはこない。ページ丸ごと来る。User-Agentを見て応答を変えてる？
                       // TODO: これ、1日のアクセス数が厳しくてたぶん10回かそれ以下くらいしか使えない感じ
                       const resultJson = request_mailrepio.responseText;
                       console.log(resultJson);
-                      document.getElementById('emailAddressReputation').innerHTML = resultJson;
+                      document.getElementById('emailAddressReputation').innerHTML =  resultJson; //JSON.stringify(resultJson, null, 2);
                   }
               };
               request_mailrepio.send();
