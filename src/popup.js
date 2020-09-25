@@ -338,9 +338,45 @@ import './popup.css';
                 document.getElementById('emailAddressValidationResult').innerHTML = "eメールアドレスがRFC2822に沿っていません";
               }
 
+              // ドメイン名を名前解決してみる
+              console.log("Querying DNS records...");
+              const emailDomainName = `${sellerInfoEmailAddress.researchSourceRawValue}`.replace(/.*?@/, '');
+              const urlDnsResolution = `http://www.dns-lg.com/ch01/${emailDomainName}/mx`; // リクエスト先URL
+              console.log(urlDnsResolution);
+              let request_dnsLg = new XMLHttpRequest();
+              request_dnsLg.open('GET', urlDnsResolution);
+              request_dnsLg.onreadystatechange = function () {
+                  if (request_dnsLg.readyState != 4) {
+                    // リクエスト中
+                    console.log("requesting...");
+                  } else if (request_dnsLg.status != 200) {
+                      // 失敗
+                      document.getElementById('emailAddressDnsResolutionResult').innerHTML = "取得に失敗しました";
+                  } else {
+                      // 取得成功
+                      const resultJson = JSON.parse(request_dnsLg.responseText);
+                      console.log(resultJson);
+
+                      const isNxDomain = (resultJson.hasOwnProperty('code')) &&  (resultJson.code == 503);
+                      if(isNxDomain){
+                        document.getElementById('emailAddressDnsResolutionResult').innerHTML =  "NXDOMAIN, ドメイン名は存在しません"
+                      }else{
+                        if(resultJson.hasOwnProperty('answer')){
+                          if(resultJson.answer.length >= 1){
+                            document.getElementById('emailAddressDnsResolutionResult').innerHTML =  "正常, MXレコードが存在しました"
+                          }else{
+                            document.getElementById('emailAddressDnsResolutionResult').innerHTML =  "異常, MXレコードが存在しません"
+                          }
+                        }else{
+                          document.getElementById('emailAddressDnsResolutionResult').innerHTML =  "エラー, 解決結果を正常にパースできません"
+                        }
+                      }
+                  }
+              };
+              request_dnsLg.send();
+
               // メアドのドメイン名のレピュテーションを調べる
               console.log("Querying reputation...");
-              // const emailDomainName = `${sellerInfoEmailAddress.researchSourceRawValue}`.replace(/.*?@/, '');
               const urlEmailReputation = `https://emailrep.io/${sellerInfoEmailAddress.researchSourceRawValue}`; // リクエスト先URL
               console.log(urlEmailReputation);
               let request_mailrepio = new XMLHttpRequest();
