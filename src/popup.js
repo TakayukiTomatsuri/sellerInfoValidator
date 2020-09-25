@@ -389,13 +389,18 @@ import './popup.css';
                   } else if (request_mailrepio.status != 200) {
                       // 失敗
                       document.getElementById('emailAddressReputation').innerHTML = "取得に失敗しました";
+                      document.getElementById('emailAddressReputationSuspicious').innerHTML = "取得に失敗しました";
+                      document.getElementById('emailAddressReputationRawJson').innerHTML = "取得に失敗しました";
                   } else {
                       // 取得成功
                       // const resultJson = JSON.parse(request.responseText);
                       // TODO: これ、1日のアクセス数が厳しくてたぶん10回かそれ以下くらいしか使えない感じ
-                      const resultJson = request_mailrepio.responseText;
+                      const resultText = request_mailrepio.responseText
+                      const resultJson = JSON.parse(resultText);
                       console.log(resultJson);
-                      document.getElementById('emailAddressReputation').innerHTML =  resultJson; //JSON.stringify(resultJson, null, 2);
+                      document.getElementById('emailAddressReputation').innerHTML = resultJson.reputation;
+                      document.getElementById('emailAddressReputationSuspicious').innerHTML = resultJson.suspicious;
+                      document.getElementById('emailAddressReputationRawJson').innerHTML =  resultText; //JSON.stringify(resultJson, null, 2);
                   }
               };
               request_mailrepio.send();

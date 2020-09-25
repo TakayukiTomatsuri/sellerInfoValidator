@@ -60,7 +60,7 @@ Command+Shift+P -> メアドとして扱う
 
 最後に、ブラウザ右上の拡張機能アイコンを押すと、各種販売者情報について調査した結果が出てきます。
 
-![image](https://user-images.githubusercontent.com/24310557/94280041-e5d79480-ff87-11ea-9b7e-23f4ce7c5447.png)
+![image](https://user-images.githubusercontent.com/24310557/94330153-a0a17a00-fffc-11ea-8b6c-a21c43e59d5a.png)
 
 ## 開発参加方法
 [CONTRIBUTING.md](/CONTRIBUTING.md)を読んでください。
