@@ -90,34 +90,34 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   // 販売者情報はタブごとに持っててほしいからcontentScript.jsで記録している
   const sellerInfoStorage = {
     // JSON文字列を取り出しJSONオブジェクトにして返す
-    get: function() {
+    get: function () {
       const temp = sessionStorage.hasOwnProperty('sellerInfo');
       console.log(`Does have sellerInfo property?: ${temp}`);
 
       let sellerInfo = {};
-      if(sessionStorage.hasOwnProperty('sellerInfo')) {
+      if (sessionStorage.hasOwnProperty('sellerInfo')) {
         sellerInfo = JSON.parse(sessionStorage["sellerInfo"]);
-      }else{
+      } else {
         // もしsellerInfoが存在しないなら空のオブジェクトを保存しとく
         // JSON形式のオブジェクトを格納するときは文字列に直さなくちゃいけないらしい
         const emptyObject = {};
-        sessionStorage["sellerInfo"] =  JSON.stringify(emptyObject);
+        sessionStorage["sellerInfo"] = JSON.stringify(emptyObject);
         sellerInfo = emptyObject;
       }
 
       return sellerInfo;
     },
     // JavaScriptオブジェクトを受け取る。JSON文字列に直して格納（このやりかたあまりよくなかった）
-    set: function(sellerInfo){
+    set: function (sellerInfo) {
       console.log(`sellerInfoStorage.set: ${sellerInfo}`);
       console.log(sellerInfo);
       sessionStorage["sellerInfo"] = JSON.stringify(sellerInfo);
     },
-    add: function(sellerInfo){
+    add: function (sellerInfo) {
       console.log(`sellerInfoStorage.add: ${sellerInfo}`);
       console.log(sellerInfo);
       const currentSellerInfo = this.get();
-      this.set( Object.assign(currentSellerInfo, sellerInfo) );
+      this.set(Object.assign(currentSellerInfo, sellerInfo));
     }
   };
 
@@ -183,7 +183,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true;
   }
 
-  
+
   // // （テンプレートにもともとあったやつ）
   // if (request.type === 'COUNT') {
   //   console.log("type   COUNT received.")
@@ -194,8 +194,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === 'SET-SELLER-INFO') {
     console.log("type SET-SELLER-INFO received.")
     console.log(request.payload)
-    console.log(JSON.stringify(request.payload) )
-    
+    console.log(JSON.stringify(request.payload))
+
     sellerInfoStorage.set(request.payload)
   }
 

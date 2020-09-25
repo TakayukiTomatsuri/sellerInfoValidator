@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>My Chrome Extension</title>
-    <link rel="stylesheet" href="popup.css" />
+  <meta charset="UTF-8">
+  <title>My Chrome Extension</title>
+  <link rel="stylesheet" href="popup.css" />
 </head>
+
 <body>
   <div class="app">
     <!-- <p class="counter-label">Counter</p>
@@ -35,7 +37,9 @@
       <!-- 住所周辺の航空写真 -->
       <div>
         <div class="research-info-title">周辺の航空写真: </div>
-        <div id="streetAddressImg"><iframe src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCMdL_FxjySdXcAVkYtK0Q3D9r_Z3mX_A0&zoom=17&maptype=satellite&q=東京駅"></iframe></div>
+        <div id="streetAddressImg"><iframe
+            src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCMdL_FxjySdXcAVkYtK0Q3D9r_Z3mX_A0&zoom=17&maptype=satellite&q=東京駅"></iframe>
+        </div>
       </div>
       <!-- 住所から検索した郵便番号 -->
       <div>
@@ -52,7 +56,7 @@
         <span class="research-info-title">対応する住所: </span><span id="postalCodeConvertedToStreetAddress">-</span>
       </div>
 
-      <h2 >電話番号</h2>
+      <h2>電話番号</h2>
       <!-- 電話番号の生の値 -->
       <div>
         <span class="research-info-title">電話番号: </span><span id="phoneNumberVal">-</span>
@@ -73,7 +77,8 @@
 
       <h2>Eメールアドレス</h2>
       <div>
-        <span class="research-info-title">Eメールアドレス: </span><sapn id="emailAddressVal">-</sapn>
+        <span class="research-info-title">Eメールアドレス: </span>
+        <sapn id="emailAddressVal">-</sapn>
       </div>
       <div>
         <span class="research-info-title">形式の正当性検証結果: </span><span id="emailAddressValidationResult">-</span>
@@ -104,7 +109,7 @@
           <span id="emailAddressReputationRawJson">-</span>
         </details>
       </div>
-    </div>  
+    </div>
   </div>
 
   <!-- Geoloniaのジオコーディングサービス、住所の正当性チェックに使用 -->
@@ -113,7 +118,7 @@
   <script src="imi-enrichment-contact.js"></script>
 
   </script>
-  
+
   <script src="popup.js"></script>
 
   <!--
@@ -123,4 +128,5 @@
     To create a production bundle, use `npm run build`.
   -->
 </body>
+
 </html>

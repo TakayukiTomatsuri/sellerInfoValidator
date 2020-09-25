@@ -71,36 +71,36 @@ chrome.runtime.onInstalled.addListener(() => {
   const parent = chrome.contextMenus.create({
     id: 'parent',
     title: 'SellerInfoValidator',
-    contexts:["selection"]       // テキスト選択時のみ表示される
+    contexts: ["selection"]       // テキスト選択時のみ表示される
   });
   chrome.contextMenus.create({
     id: 'streetAddress',
     parentId: 'parent',
     title: '住所として選択',
-    contexts:["selection"] 
+    contexts: ["selection"]
   });
   chrome.contextMenus.create({
     id: 'postalCode',
     parentId: 'parent',
     title: '郵便番号として選択',
-    contexts:["selection"] 
+    contexts: ["selection"]
   });
   chrome.contextMenus.create({
     id: 'phoneNumber',
     parentId: 'parent',
     title: '電話番号として選択',
-    contexts:["selection"] 
+    contexts: ["selection"]
   });
   chrome.contextMenus.create({
     id: 'emailAddress',
     parentId: 'parent',
     title: 'メールアドレスとして選択',
-    contexts:["selection"] 
+    contexts: ["selection"]
   });
 });
 
 // 現在のタブにメッセージ送るだけの関数
-function sendMessageToCurrentTab (content){
+function sendMessageToCurrentTab(content) {
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     chrome.tabs.sendMessage(tabs[0].id, content, function (response) {
       console.log(response);
@@ -112,20 +112,20 @@ function sendMessageToCurrentTab (content){
 chrome.contextMenus.onClicked.addListener(item => {
   console.log(item);
   console.log(item.menuItemId);
-  
+
   // contentScripにメッセージを送信し、選択されたテキストの情報を保存させる
-  switch(item.menuItemId){
+  switch (item.menuItemId) {
     case "streetAddress":
-      sendMessageToCurrentTab({text: "select-street-address"});
+      sendMessageToCurrentTab({ text: "select-street-address" });
       break;
     case "postalCode":
-      sendMessageToCurrentTab({text: "select-postal-code"});
+      sendMessageToCurrentTab({ text: "select-postal-code" });
       break;
     case "phoneNumber":
-      sendMessageToCurrentTab({text: "select-phone-number"});
+      sendMessageToCurrentTab({ text: "select-phone-number" });
       break;
     case "emailAddress":
-      sendMessageToCurrentTab({text: "select-email-address"});
+      sendMessageToCurrentTab({ text: "select-email-address" });
       break;
     default:
       console.log(`Unknown context menu selected. ${item.menuItemId}`);
