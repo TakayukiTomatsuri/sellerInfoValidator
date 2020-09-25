@@ -1,10 +1,23 @@
-# 開発上のメモ
+# 販売者情報チェッカー
 
-## 動かし方
+## 機能概要
+販売者の以下の情報について調べるOSINTツールです。GoogleChrome拡張機能として作成されています。
+* 住所
+* 郵便番号
+* 電話番号
+* Eメールアドレス
+
+デタラメな情報を載せている怪しい販売者を見破るのに役立ててください。
+
+## インストール方法
+まだChromeウェブストアには公開しておりません...。
+
+そのため開発時と同じ方法でインストールします。
+### ビルド
 
 ```
 # このリポジトリをクローンする
-git clone https://github.com/.....
+git clone https://github.com/TakayukiTomatsuri/sellerInfoValidator
 
 # クローンしてできたリポジトリに入る
 cd sellerInfoValidator
@@ -15,19 +28,24 @@ npm install
 # ビルドして結果を./buildに配置する. ファイルに変更があると自動で再ビルドされる
 npm run watch
 ```
+### GoogleChromeにインストール
+Google Chromeで `chrome://extensions`にアクセスします。  
 
-Google Chromeで `chrome://extensions`にアクセス、右上のデベロッパーモードをオンにして、左上の「パッケージ化されていない拡張機能を読み込む」ボタンから `./build` を指定して読み込み。
-
-すると作成中の拡張機能が使えるようになる。
-
-ソースに変更があれば自動でビルドされ、Chrome側でも自動で読み込まれるはずだが、ショートカットキーの変更など一部の変更は、拡張機能を削除して入れ直さないと反映されない。
-
-### chrome拡張機能の使い方
-テキストを選択した状態でコンテクストメニューまたはキーコマンドで、選択中のテキストを住所や電話番号などの販売者情報として扱う。
+右上のデベロッパーモードをオンにして、左上の「パッケージ化されていない拡張機能を読み込む」ボタンから `sellerInfoValidator/build` に当たるディレクトリを指定して読み込みます。  
+![image](https://user-images.githubusercontent.com/24310557/94279208-c4c27400-ff86-11ea-9585-485b6f212c99.png)
 
 
-キーコマンドは以下の通り。  
-`./public/manifest.json` で定義されいる。
+すると使えるようになります。
+
+## 操作方法
+テキストを選択した状態でコンテクストメニューで、選択中のテキストを住所や電話番号などの販売者情報（住所, 郵便番号, etc..）として扱います。  
+この販売者情報はタブごとに記憶されます。
+
+![image](https://user-images.githubusercontent.com/24310557/94278584-f555de00-ff85-11ea-9337-3c89bce8bd37.png)
+
+
+
+テキスト選択後にキーコマンドでも以下の操作ができます。これは試験段階の機能です。
 ```
 # Windowsの場合
 Command+Shift+K -> 住所として扱う
@@ -39,25 +57,10 @@ Command+Shift+K -> 住所として扱う
 Command+Shift+O -> 電話番号として扱う
 Command+Shift+P -> メアドとして扱う
 ```
-（↑キーコマンドまではいらないかも）
 
-ブラウザ右上の拡張機能アイコンを押すと、住所や電話番号、メアドについて調査した結果が出てくる。
+最後に、ブラウザ右上の拡張機能アイコンを押すと、各種販売者情報について調査した結果が出てきます。
 
-## コードについて
-[このサイト](https://itnews.org/news_contents/product-chrome-extension-cli)を参考にChrome Extension CLIで生成されたテンプレートを利用した。
+![image](https://user-images.githubusercontent.com/24310557/94280041-e5d79480-ff87-11ea-9b7e-23f4ce7c5447.png)
 
-ディレクトリ構造は以下の通り。
-
-```
-.
-├── README.md
-├── build                <- ビルド結果がここに置かれる
-├── config               <- ビルドコンフィグが置かれてる
-├── node_modules         <- Node.jsのモジュールが置かれてる
-├── package-lock.json    <- npmのパッケージ管理情報, インストールしたモジュールのバージョンとか
-├── package.json         <- npmのパッケージ管理情報, インストールしたモジュールとか
-├── public               <- トランスパイル等無しにそのまま公開されるファイルたち
-└── src                  <- ソースコード
-```
 
 
