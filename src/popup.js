@@ -137,12 +137,31 @@ import './popup.css';
               // 調査済みの住所だったらなにもしない
             }else{
               sellerInfoStreetAddress.researchSourceRawValue = sellerInfoStreetAddress.rawValue;
+              
+              // もし住所が逆順表記されてそうなら順番を入れ替える(Amazonでは逆順表記される)
+              const lastChar = sellerInfoStreetAddress.researchSourceRawValue.slice(-1);
+              // 逆順表記か否かは、末尾に都道府県が来てるかどうかで判定する（微妙か？！）
+              const isInversedStreetAddress = lastChar == '都' || lastChar == '道' || lastChar == '府' || lastChar == '県';
+              let researchTargetStreetAddress = {};
+              if (isInversedStreetAddress){
+                // Amazonは改行区切の逆順表記なので、改行で区切って入れ替える
+                // TODO: Amazonでやられてる以外の表記方法だと対応できない。(他のやり方でもし日本語住所を逆順表記してるとこが確認できれば、）もっとましなやり方を考える
+                let streetAddresArray = sellerInfoStreetAddress.researchSourceRawValue.split('\n').reverse();
+                researchTargetStreetAddress = streetAddresArray.join('').trim();
+              }else{
+                researchTargetStreetAddress = sellerInfoStreetAddress.researchSourceRawValue.trim();
+              }
+
 
               // 住所の生の値
-              document.getElementById('streetAddressVal').innerHTML = sellerInfoStreetAddress.researchSourceRawValue;
+              if(isInversedStreetAddress){
+                document.getElementById('streetAddressVal').innerHTML = researchTargetStreetAddress + " (元の値は逆順表記)";
+              }else{
+                document.getElementById('streetAddressVal').innerHTML = researchTargetStreetAddress;
+              }
 
               // 住所の正当性の確認結果
-              getLatLng(sellerInfoStreetAddress.researchSourceRawValue, (latlng) => {
+              getLatLng(researchTargetStreetAddress, (latlng) => {
                 // 普通に緯度経度を返してきたら正当
                 document.getElementById('streetAddressValidationResult').innerHTML = "正当"
               },(error) => {
@@ -153,10 +172,10 @@ import './popup.css';
 
               // 住所の周辺の航空写真
               // (Google Maps Embed APIキーはまだ公開しないでください。無制限に使える状態です。いくら使ってもお金かからないはずだけど、BANされるかも。ふつうはリファラを利用し、埋め込み先サイトを制限するがChrome拡張機能だとサイトとかじゃないのでリファラで制限できるのか...?)
-              document.getElementById('streetAddressImg').innerHTML = `<iframe src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCMdL_FxjySdXcAVkYtK0Q3D9r_Z3mX_A0&zoom=17&maptype=satellite&q=${sellerInfoStreetAddress.researchSourceRawValue}"></iframe>`
+              document.getElementById('streetAddressImg').innerHTML = `<iframe src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCMdL_FxjySdXcAVkYtK0Q3D9r_Z3mX_A0&zoom=17&maptype=satellite&q=${researchTargetStreetAddress}"></iframe>`
 
               // 住所から検索した郵便番号
-              const urlZipcodeReverse = `https://zipcoda.net/api?address=${sellerInfoStreetAddress.researchSourceRawValue}`;
+              const urlZipcodeReverse = `https://zipcoda.net/api?address=${researchTargetStreetAddress}`;
               console.log(`Zipocode Reverse search url: ${urlZipcodeReverse}`);
               let requestZipcodeReverse = new XMLHttpRequest();
               requestZipcodeReverse.open('GET', urlZipcodeReverse);
