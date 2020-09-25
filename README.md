@@ -62,5 +62,6 @@ Command+Shift+P -> メアドとして扱う
 
 ![image](https://user-images.githubusercontent.com/24310557/94280041-e5d79480-ff87-11ea-9b7e-23f4ce7c5447.png)
 
-
+## 開発参加方法
+[CONTRIBUTING.md](/CONTRIBUTING.md)を読んでください。
 
